@@ -1,0 +1,22 @@
+resources:
+- name: repo
+  type: git
+  source:
+    uri: https://github.com/ChunPingWang/spring-music.git 
+
+jobs:
+- name: spring-music-job
+  plan:
+  - get: repo
+    trigger: true
+  - task: spring-music-task
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source: {repository: java, tag: openjdk-8}  
+      
+      inputs: # add the get step as an input to this task
+      - name: repo
+      run: # read the file from the get step
+        path: spring-music-build.sh
